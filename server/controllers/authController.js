@@ -23,7 +23,7 @@ const login = async (req, res) => {
         email: foundUser.email,
         address: foundUser.address,
         phone: foundUser.phone,
-        roles:foundUser.rolse
+        roles:foundUser.roles
     };
 
     const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
@@ -47,13 +47,13 @@ const register = async (req, res) => {
        const userObject={name,username,password:hashedPwd,email,address,phone,roles:'User'}  
        const user = await User.create(userObject)
        if (user) { 
-           return res.status(201).json({message:`New user ${user.name}
-           created` })
+        const accessToken = jwt.sign(userObject, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+           return res.json({ accessToken });
+                     
            } else {
            return res.status(400).json({message:'Invalid user received'})
            } 
-    const accessToken = jwt.sign(userObject, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-    return res.json({ accessToken }); 
+     
 };
 
 module.exports = { login, register };

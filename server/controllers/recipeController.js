@@ -2,11 +2,11 @@ const Recipe=require("../models/recipe")
 const fs = require('fs');
 const addRecipe=async(req,res)=>{
   const image=(req.file?.filename?req.file.filename:"")
-  const {name,description}=req.body
-  if(!name){
-    return res.status(400).json({massage:"Name is requierd"})
+  const {name,title,ingredients,instructions}=req.body
+  if(!name||!title||!ingredients||!instructions){
+    return res.status(400).json({massage:"Name title ingreddients and instruction are requierd"})
   }
-  const newImage=await Recipe.create({name,image,description})
+  const newImage=await Recipe.create({name,image,title,ingredients,instructions})
   if(!name){
     return res.status(400).json({massage:"Something wrong"})
   }
@@ -27,10 +27,10 @@ res.json(recipe)
 }
 const updateRecipe=async(req,res)=>{
   const{id}=req.params
-  const {name,description}=req.body
+  const {name,title,ingredients,instructions}=req.body
   const image=(req.file?.filename?req.file.filename:"")
-  if(!name){
-    return res.status(400).json({massage:"Name is requierd"})
+  if(!name||!title||!ingredients||!instructions){
+    return res.status(400).json({massage:"Name title ingreddients and instruction are requierd"})
   }
   const recipe=await Recipe.findById(id).exec()
   if(!recipe)
@@ -41,8 +41,10 @@ const updateRecipe=async(req,res)=>{
     return res.status(400).json({ message: 'This recipe not found' })
 }})
   recipe.name=name;
-  recipe.description=description;
+  recipe.ingredients=ingredients;
+  recipe.title=title;
   recipe.image=image;
+  recipe.instructions=instructions;
   const saveRecipe=await recipe.save()
   res.json(recipe)
 }
