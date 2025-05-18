@@ -9,9 +9,18 @@ const recipeSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    description:{
-      type:String
-
+    title: {
+      type: String,
+      required: true
+    },
+    ingredients: {
+      type: [String], 
+      required: true
+    },
+    instructions: {
+      type: [String], 
+      required: true
     }
+ 
 },{timestamps:true})
 module.exports=mongoose.model('recipe',recipeSchema)

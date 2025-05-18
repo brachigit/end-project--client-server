@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const verifyJWT = (req, res, next) => {
-    const authHeader = req.headers.authorization ||
+const authHeader = req.headers.authorization ||
 req.headers.Authorization
 if (!authHeader?.startsWith('Bearer ')) {
 return res.status(401).json({ message: 'Unauthorized' })
@@ -13,6 +13,7 @@ process.env.ACCESS_TOKEN_SECRET,
 if (err) return res.status(403).json({ message:
 'Forbidden' })
 req.user = decoded
+console.log(decoded)
 next()
 }
 )
