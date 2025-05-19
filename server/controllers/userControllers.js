@@ -39,7 +39,7 @@ const bcrypt= require('bcrypt')
     const hashedPwd = await bcrypt.hash(password, 10)
     const userObject={name,username,password:hashedPwd,email,address,phone,roles:'Admin'} 
     const user = await User.create(userObject)
-if (user) { 
+   if (user) { 
     return res.status(201).json({message:`New user ${user.name}
     created` })
     } else {

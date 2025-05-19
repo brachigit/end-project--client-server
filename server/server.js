@@ -15,6 +15,7 @@ app.use("/api/auth", require("./routers/authRouter"))
 app.use("/api/user", require("./routers/userRouter"))
 app.use("/api/recipe",require("./routers/recipeRouter"))
 app.use("/api/cookbook",require("./routers/cookbookRouter"))
+app.use("/api/nutrition",require("./routers/nutritionitemRouter"))
 
 mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB')

@@ -16,13 +16,16 @@ const CreateCookbook=async(req,res)=>{
 const addRecipe=async(req,res)=>{
     const id=req.user._id
     const recipe=req.body
-    const duplicate = await Cookbook.findOne({user:id}).lean()
+    const duplicate = await Cookbook.findOne({user:id}).exec()
     if(!duplicate){
-        await CreateCookbook();
+        duplicate = await Cookbook.create({ user: id });
     }  
+    if(!duplicate)
+        return res.status(401).json({message:"Somthing wrong"})
     if(!recipe){
         return res.status(409).json({message:"No accept recipe"})
         }
+
     const newrecipe=await Cookbook.findByIdAndUpdate(
         duplicate._id,
         { $addToSet: { recipeList: recipe._id } },
