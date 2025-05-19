@@ -7,7 +7,7 @@ const addRecipe=async(req,res)=>{
     return res.status(400).json({massage:"Name title ingreddients and instruction are requierd"})
   }
   const newImage=await Recipe.create({name,image,title,ingredients,instructions})
-  if(!name){
+  if(!newImage){
     return res.status(400).json({massage:"Something wrong"})
   }
   return res.status(200).json(newImage)

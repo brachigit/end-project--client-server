@@ -12,11 +12,11 @@ const Login=()=>{
     const { register, handleSubmit } = useForm()
   const onSubmit = (data) =>{loginFunc(data)}
 
-  useEffect(
+ useEffect(
     ()=>{
         if(isSuccess)
-            dispach(setToken(data))
-    },isSuccess
+            dispach(setToken({ token: data.accessToken }))
+    },[isSuccess]
   )
     
 
