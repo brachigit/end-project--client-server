@@ -61,12 +61,12 @@ const DeleteOne =async(req,res)=>{
 }
 
 const GetCookbook=async(req,res)=>{
-    const {id}=req.user._id
-    const duplicate = await Cookbook.findOne({user:id}).lean()
+    const id=req.user._id
+    const duplicate = await Cookbook.findOne({user:id}).populate("recipeList").lean()
     if(!duplicate){
         return res.status(401).json({message:"You dont have cookbook"})
     }
-    return res.status(401).json(uplicate)
+    return res.status(200).json(duplicate)
 
 }
 
