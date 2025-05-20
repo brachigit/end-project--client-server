@@ -1,11 +1,12 @@
 
 import { Outlet } from "react-router-dom";
+import  NutritionAppBar  from "./NutritionAppBar";
 
 const Layout = () => {
   return (
     
       <div>
-     <header></header>
+     <header><NutritionAppBar/></header>
         <main>
         <Outlet />
         </main>  

@@ -18,8 +18,8 @@ const storage = multer.diskStorage({
   const upload = multer({ storage: storage })
 
 router.post("/",verifyJWT,managerJWT,upload.single('image'),recipe.addRecipe)
-router.delete("/:id",managerJWT,recipe.deleteRecipe)
-router.put("/:id",managerJWT,upload.single('image'),recipe.updateRecipe)
+router.delete("/:id",verifyJWT,managerJWT,recipe.deleteRecipe)
+router.put("/:id",verifyJWT,managerJWT,upload.single('image'),recipe.updateRecipe)
 router.get("/",verifyJWT,recipe.getAllRecipe)
 router.get("/:id",verifyJWT,recipe.getRecipeByID)
 
