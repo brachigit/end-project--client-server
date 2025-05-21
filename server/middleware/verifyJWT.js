@@ -18,4 +18,3 @@ next()
 )
 }
 module.exports = verifyJWT
-
