@@ -7,48 +7,57 @@ import { TextField, Button, Box } from "@mui/material";
 
 
 const Register=()=>{
-    const dispach=useDispatch() 
+    const dispatch=useDispatch() 
     const [registerFunc,{data, error, isLoading,isSuccess,isError }]=useRegisterMutation()
     
 
-    const { register, handleSubmit } = useForm()
-  const onSubmit = (data) =>{registerFunc(data)}
+    const { register, handleSubmit, formState: { errors }, setError } = useForm()
+  const onSubmit = (data1) =>{ 
+    try {registerFunc(data1)}
+    catch (err) {
+      // אם השרת החזיר שגיאה על username:
+      if (err?.data?.message === "User already exists") {
+        setError("username", {
+          type: "server",
+          message: "Username already exists",
+        });
+      }}
+  }
 
   useEffect(
     ()=>{
         if(isSuccess)
-            dispach(setToken({ token: data.accessToken }))
-    },[isSuccess]
-  )
+            dispatch(setToken({token: data?.accessToken}))
+    },[isSuccess] )
     
 
   return (
 
-   <form onSubmit={handleSubmit(onSubmit)}>
+  /* <form onSubmit={handleSubmit(onSubmit)}>
       <input {...register("name", { required: true}) }placeholder="name" />
       <br/>
       <input {...register("username", { required: true}) }placeholder="username"  />
       <br/>
-      <input {...register("password", { required: true,minLength: {
+      <input {...register("password", { required: true,minLength:{
       value: 8,
-      message: "Phone number must be at least 8 characters"
-    }}) }placeholder="password"  />
+      message: "password must be at least 8 characters"
+    } }) }placeholder="password"  />
       <br/>
-      <input {...register("email", { required: true, pattern: {
-            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: "Invalid email address"
-          }}) }placeholder="email"  />
+      <input {...register("email", { required: true}) }placeholder="email"  />
       <br/>
       <input {...register("address") }placeholder="address"  />
       <br/>
-      <input {...register("phone", {minLength: {
+      <input {...register("phone", { required: true,minLength:{
       value: 8,
       message: "Phone number must be at least 8 characters"
-    }}) }placeholder="phone"  />
+    } }) }placeholder="phone"  />
       <br/>
       <input type="submit" value="Send" />
-    </form>
-    /* <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ maxWidth: 500, mx: "auto", mt: 4 }}>
+    </form>*/
+
+
+
+     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ maxWidth: 500, mx: "auto", mt: 4 }}>
       <TextField
         label="Name"
         fullWidth
@@ -63,8 +72,8 @@ const Register=()=>{
         fullWidth
         margin="normal"
         {...register("username", { required: "Username is required" })}
-       /// error={!!errors.username}
-        //helperText={errors.username?.message}
+        error={!!errors.username}
+        helperText={errors.username?.message}
       />
 
       <TextField
@@ -79,8 +88,8 @@ const Register=()=>{
             message: "Password must be at least 8 characters",
           },
         })}
-        //error={!!errors.password}
-       // helperText={errors.password?.message}
+       error={!!errors.password}
+        helperText={errors.password?.message}
       />
 
       <TextField
@@ -95,8 +104,8 @@ const Register=()=>{
             message: "Invalid email address",
           },
         })}
-       // error={!!errors.email}
-        //helperText={errors.email?.message}
+        error={!!errors.email}
+        helperText={errors.email?.message}
       />
 
       <TextField
@@ -111,20 +120,18 @@ const Register=()=>{
         fullWidth
         margin="normal"
         {...register("phone", {
-          required: "Phone is required",
           minLength: {
             value: 8,
             message: "Phone number must be at least 8 digits",
           },
         })}
-       // error={!!errors.phone}
-        //helperText={errors.phone?.message}
+       
       />
 
       <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
-        Submit
+        sight_in
       </Button>
-    </Box>*/
+    </Box>
   )
   
    
