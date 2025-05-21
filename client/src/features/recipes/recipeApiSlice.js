@@ -13,8 +13,24 @@ const recipeApiSlice=apiSlice.injectEndpoints({
                  method:"POST",
                  body:recipe
           })
-        })
+        }),
+        DeleteRecipe:build.mutation({
+            query:(id)=>({
+                url:`/api/recipe/${id}`,
+                method:"DELETE"
+                
+          }),invalidatesTags:["recipes"]
+        }),
+        AddRecipe:build.mutation({
+            query:(recipe)=>({
+                url:"/api/recipe",
+                method:"POST",
+                body:recipe
+                
+          }),invalidatesTags:["recipes"]
+        }),
+
 
 })
 })
-export const{useGetRecipesQuery,useAddFavoriteRecipeMutation}=recipeApiSlice;
+export const{useGetRecipesQuery,useAddFavoriteRecipeMutation,useDeleteRecipeMutation,useAddRecipeMutation}=recipeApiSlice;
