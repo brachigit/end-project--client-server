@@ -1,18 +1,8 @@
 import { useGetRecipesQuery,useAddFavoriteRecipeMutation } from "./recipeApiSlice";
 import { Link } from "react-router-dom";
+import {useState}  from "react"
 import {useDeleteRecipeMutation} from "../cookbook/CookbookApiSlice"
-import {
-  Card,
-  CardHeader,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Avatar,
-  IconButton,
-  Typography,
-  Grid,
-  Box,
-} from "@mui/material";
+import { Card,  CardHeader,  CardMedia,  CardContent,  CardActions,  Avatar,  IconButton,  Typography,  Grid,  Box,} from "@mui/material";
 import { red } from "@mui/material/colors";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
@@ -21,31 +11,26 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { jwtDecode } from "jwt-decode";
 import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteRecipe from "./DeleteRecipe";
+import AddRecipe from "./AddRecipe";
 
-const token = localStorage.getItem("token");
-let decoded = null;
 
-try {
-  if (token) {
-    decoded = jwtDecode(token);
-  }
-} catch (error) {
-  console.error("שגיאה בפענוח הטוקן:", error.message);
-}
 
-const isAdmin = decoded?.roles === "Admin";
 
 const RecipesList = ({ cookbook }) => {
+  const [Deletevalue,SetDeletevalue] =useState({})
+  const [DeleteOpen,SetDeleteOpen] =useState()
+  const [AddRecipeOpen,SetAddRecipeOpen] =useState(false)
+
+
+
+  const token = localStorage.getItem("token");
+  const decoded = jwtDecode(token);
+  const isAdmin = decoded?.roles === "Admin";
   const { data: recipesQuery, error, isLoading, isSuccess, isError } = useGetRecipesQuery();
   console.log({ recipesQuery, error, isLoading, isSuccess, isError });
   const [deleteRecipe,{ data:deletData, error:deleteEror, isLoading:deleteLogin, isSuccess:deleteSuccess, isError:deleteIsEror }] = useDeleteRecipeMutation();
- const [addFavorite, {
-  data: favoriteData,
-  error: addError,
-  isLoading: isAddingFavorite,
-  isSuccess: isFavoriteSuccess,
-  isError: isFavoriteError
-}] = useAddFavoriteRecipeMutation();
+ const [addFavorite, {  data: favoriteData,  error: addError,  isLoading: isAddingFavorite,  isSuccess: isFavoriteSuccess,  isError: isFavoriteError}] = useAddFavoriteRecipeMutation();
 
 const recipes = cookbook || recipesQuery;
   if (isLoading) return <div>טוען...</div>;
@@ -54,10 +39,23 @@ const recipes = cookbook || recipesQuery;
     return <div>שגיאה בטעינת מתכונים</div>;
   }
   if (!recipes || recipes.length === 0) return <div>אין מתכונים להצגה</div>;
+ 
+ 
+const ManagerDeleteRecipe= (value)=>{
+  SetDeletevalue(value)
+  SetDeleteOpen(true)
+}
+const DeleteClose=()=>{
+  SetDeleteOpen(false)
+}
+const ManagerAddRecipe= ()=>{
+
+  SetAddRecipeOpen(true)
+}
 
   return (
     <>
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', direction: 'rtl' }}>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         {recipes.map((item) => (
           <Grid size={3} key={item._id}>
@@ -107,7 +105,7 @@ const recipes = cookbook || recipesQuery;
                   </Typography>
                 </CardContent>
                 </Link>
-                <CardActions>
+                <CardActions sx={{ mt: "auto" }}>
                   {(!cookbook)?
                   <IconButton aria-label="add to favorites">
                     <FavoriteIcon onClick={(e) => {e.preventDefault(); addFavorite(item)}}/>
@@ -119,8 +117,8 @@ const recipes = cookbook || recipesQuery;
                   <IconButton aria-label="share">
                     <ShareIcon />
                   </IconButton>
-                  <IconButton aria-label="share">
-                    <DeleteIcon />
+                  <IconButton >
+                    <DeleteIcon aria-label="share" onClick={() => ManagerDeleteRecipe(item)}/>
                   </IconButton></>
                  )}
                 </CardActions>
@@ -132,9 +130,11 @@ const recipes = cookbook || recipesQuery;
     </Box>
     {isAdmin && (
       <IconButton aria-label="share">
-        <AddIcon />
+        <AddIcon onClick={() => ManagerAddRecipe()} />
       </IconButton>
     )}
+    <DeleteRecipe open={DeleteOpen} setopen={SetDeleteOpen}  onClose={DeleteClose} payload={Deletevalue}/>
+    <AddRecipe open={AddRecipeOpen} setOpen={SetAddRecipeOpen}/>
     </>
   );
 };

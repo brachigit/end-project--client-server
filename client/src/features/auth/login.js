@@ -35,24 +35,7 @@ const Login=()=>{
 
   return (
 
-  /* <form onSubmit={handleSubmit(onSubmit)}>
-      
-      <br/>
-      <input {...register("username", { required: true}) }placeholder="username"  />
-      <br/>
-      <input {...register("password", { required: true,minLength:{
-      value: 8,
-      message: "password must be at least 8 characters"
-    } }) }placeholder="password"  />
-      <br/>
-      
-      <br/>
-      <input type="submit" value="Send" />
-    </form>*/
-
-
-
-     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ maxWidth: 500, mx: "auto", mt: 4 }}>
+       <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ maxWidth: 500, mx: "auto", mt: 4 }}>
       
       <TextField
         label="Username"
