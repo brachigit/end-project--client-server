@@ -29,8 +29,23 @@ const recipeApiSlice=apiSlice.injectEndpoints({
                 
           }),invalidatesTags:["recipes"]
         }),
+        UpdateRecipe:build.mutation({
+            query:({ id, recipe })=>({
+                url:`/api/recipe/${id}`,
+                method:"PUT",
+                body:recipe
+                
+          }),invalidatesTags:["recipes"]
+        }),
+         SearchRecipe:build. query({
+            query:(name)=>({
+               url: `/api/recipe/search?name=${name}`
+           
+                
+          }),invalidatesTags:["recipes"]
+        }),
 
 
 })
 })
-export const{useGetRecipesQuery,useAddFavoriteRecipeMutation,useDeleteRecipeMutation,useAddRecipeMutation}=recipeApiSlice;
+export const{useGetRecipesQuery,useAddFavoriteRecipeMutation,useDeleteRecipeMutation,useAddRecipeMutation,useSearchRecipeQuery,useUpdateRecipeMutation}=recipeApiSlice;

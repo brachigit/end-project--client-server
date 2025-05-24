@@ -10,7 +10,7 @@ const Login=()=>{
     const dispatch=useDispatch() 
     const [loginFunc,{data, error, isLoading,isSuccess,isError }]=useLoginMutation()
     
-
+   //console.log(data, error, isLoading,isSuccess,isError)
     const { register, handleSubmit , formState: { errors }, setErro} = useForm()
   const onSubmit = (data) =>{ 
 
