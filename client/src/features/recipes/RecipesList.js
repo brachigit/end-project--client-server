@@ -1,6 +1,6 @@
-import { useGetRecipesQuery,useAddFavoriteRecipeMutation } from "./recipeApiSlice";
+import { useGetRecipesQuery,useAddFavoriteRecipeMutation,useSearchRecipeQuery } from "./recipeApiSlice";
 import { Link } from "react-router-dom";
-import {useState}  from "react"
+import {useState,useEffect}  from "react"
 import {useDeleteRecipeMutation} from "../cookbook/CookbookApiSlice"
 import { Card,  CardHeader,  CardMedia,  CardContent,  CardActions,  Avatar,  IconButton,  Typography,  Grid,  Box,} from "@mui/material";
 import { red } from "@mui/material/colors";
@@ -13,34 +13,50 @@ import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteRecipe from "./DeleteRecipe";
 import AddRecipe from "./AddRecipe";
+import SearchIcon from '@mui/icons-material/Search';
+import { styled, alpha } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
+import TextField from '@mui/material/TextField';
+
+
+
 
 
 
 
 const RecipesList = ({ cookbook }) => {
+  const [recipes,SetRecipes] =useState(null)
   const [Deletevalue,SetDeletevalue] =useState({})
   const [DeleteOpen,SetDeleteOpen] =useState()
   const [AddRecipeOpen,SetAddRecipeOpen] =useState(false)
-
-
+  const [action,SetAction] =useState(null)
+  const [id,SetId] =useState(null)
+  const [inputValue,SetInputValue] =useState("")
+  const [searchTerm,setSearchTerm] =useState(null)
 
   const token = localStorage.getItem("token");
   const decoded = jwtDecode(token);
   const isAdmin = decoded?.roles === "Admin";
   const { data: recipesQuery, error, isLoading, isSuccess, isError } = useGetRecipesQuery();
-  console.log({ recipesQuery, error, isLoading, isSuccess, isError });
   const [deleteRecipe,{ data:deletData, error:deleteEror, isLoading:deleteLogin, isSuccess:deleteSuccess, isError:deleteIsEror }] = useDeleteRecipeMutation();
- const [addFavorite, {  data: favoriteData,  error: addError,  isLoading: isAddingFavorite,  isSuccess: isFavoriteSuccess,  isError: isFavoriteError}] = useAddFavoriteRecipeMutation();
+  const [addFavorite, {  data: favoriteData,  error: addError,  isLoading: isLoadingFavorite,  isSuccess: isFavoriteSuccess,  isError: isFavoriteError}] = useAddFavoriteRecipeMutation();
+    const{data: search,  error: searchError,  isLoading: searchIsLoading,  isSuccess:isSuccesSearch,  isError: isSearcheError}= useSearchRecipeQuery(inputValue);
+//SetRecipes(cookbook || recipesQuery);
 
-const recipes = cookbook || recipesQuery;
-  if (isLoading) return <div>טוען...</div>;
-  if (isError) {
-    console.log(error);
-    return <div>שגיאה בטעינת מתכונים</div>;
+useEffect(()=>{
+   SetRecipes(cookbook || recipesQuery)
+},[])
+
+useEffect(()=>{
+  if(inputValue&&search&&isSuccesSearch){
+    
+    SetRecipes(search)}
+  else{
+    SetRecipes(cookbook || recipesQuery);
   }
-  if (!recipes || recipes.length === 0) return <div>אין מתכונים להצגה</div>;
+ },[inputValue,search,isSuccesSearch])
  
- 
+
 const ManagerDeleteRecipe= (value)=>{
   SetDeletevalue(value)
   SetDeleteOpen(true)
@@ -50,11 +66,58 @@ const DeleteClose=()=>{
 }
 const ManagerAddRecipe= ()=>{
 
+  SetAction("AddRecipe")
+  SetAddRecipeOpen(true)
+}
+const ManagerUpdateRecipe= (value)=>{
+
+  SetId(value)
+  SetAction("UpdateRecipe")
   SetAddRecipeOpen(true)
 }
 
+
+
+ if (isLoading) return <div>טוען...</div>;
+  if (isError) {
+    console.log(error);
+    return <div>שגיאה בטעינת מתכונים</div>;
+  }
+  //if (!recipes || recipes.length === 0) return <div>אין מתכונים להצגה</div>;
+ 
+ 
+
+
+
   return (
     <>
+    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+   <Box
+      sx={{
+        justifyContent: 'flex-end',
+        display: 'flex',
+        alignItems: 'center',
+        border: '1px solid lightgray',
+        borderRadius: 2,
+        padding: '4px 8px 8px 8px',
+        width: '100%',
+        maxWidth: 150,
+        direction: 'rtl' 
+
+      }}
+    >
+      <SearchIcon sx={{ color: 'gray', mr: 1 }} />
+      <InputBase
+        sx={{ flex: 1 }}
+        placeholder="חיפוש..."
+        value={inputValue}
+        onChange={(e) => SetInputValue(e.target.value)}
+        inputProps={{ 'aria-label': 'search' }}
+      />
+    </Box>
+    </Box>
+
+  {(recipes && recipes.length != 0)&&(
     <Box sx={{ width: '100%', direction: 'rtl' }}>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         {recipes.map((item) => (
@@ -95,7 +158,7 @@ const ManagerAddRecipe= ()=>{
                     sx={{
                       width: "100%",
                       height: "100%",
-                      objectFit: "contain", // מציג את התמונה בשלמותה
+                      objectFit: "contain", 
                     }}
                   />
                 </Box>
@@ -115,7 +178,7 @@ const ManagerAddRecipe= ()=>{
                   {isAdmin && (
                     <>
                   <IconButton aria-label="share">
-                    <ShareIcon />
+                    <ShareIcon onClick={() => ManagerUpdateRecipe(item._id)}/>
                   </IconButton>
                   <IconButton >
                     <DeleteIcon aria-label="share" onClick={() => ManagerDeleteRecipe(item)}/>
@@ -127,14 +190,14 @@ const ManagerAddRecipe= ()=>{
           </Grid>
         ))}
       </Grid>
-    </Box>
+    </Box>)}
     {isAdmin && (
       <IconButton aria-label="share">
         <AddIcon onClick={() => ManagerAddRecipe()} />
       </IconButton>
     )}
     <DeleteRecipe open={DeleteOpen} setopen={SetDeleteOpen}  onClose={DeleteClose} payload={Deletevalue}/>
-    <AddRecipe open={AddRecipeOpen} setOpen={SetAddRecipeOpen}/>
+    <AddRecipe open={AddRecipeOpen} setOpen={SetAddRecipeOpen} action={action} id={id}/>
     </>
   );
 };

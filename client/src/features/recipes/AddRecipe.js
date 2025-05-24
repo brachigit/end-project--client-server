@@ -1,6 +1,6 @@
 import { ResetTvOutlined } from "@mui/icons-material"
 import { useForm, SubmitHandler } from "react-hook-form"
-import { useAddRecipeMutation } from "./recipeApiSlice"
+import { useAddRecipeMutation,useUpdateRecipeMutation } from "./recipeApiSlice"
 import Dialog from '@mui/material/Dialog';
 import * as React from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -12,9 +12,10 @@ import {useState,useEffect}  from "react"
 
  
 
-const AddRecipe=({open, setOpen})=>{
+const AddRecipe=({open, setOpen,action,id})=>{
 const { register, handleSubmit, formState: { errors }, setError } = useForm()
 const [AddRecipe,{ data, error:dataEror, isLoading, isSuccess, isError }] = useAddRecipeMutation();
+const [UpdateRecipe,{ data:updeteData, error:updeteEror, isLoading:updeteIsLoading, isSuccess:updeteIsSuccess, isError:updeteIsError }] = useUpdateRecipeMutation();
 const [preview, setPreview] = useState(null);
 
 useEffect(() => {
@@ -31,27 +32,36 @@ const handleClose = () => {
   };
 
 const onSubmit = (data) =>{ 
-console.log(data)
-   const file = data.image[0];
+  const file = data.image[0];
   const formData = new FormData();
   formData.append("name", data.name);
   formData.append("title", data.title);
   formData.append("ingredients", data.ingredients);
   formData.append("instructions", data.instructions);
   formData.append("image", file); 
+  if(action==="AddRecipe"){
     try {AddRecipe(formData)}
-  
-    catch (err) {
+      catch (err) {
       if (err?.data?.message === "User already exists") {
         data.setError("username", {
           type: "server",
           message: "Username already exists",
         });
       }
+      }}
+  if(action==="UpdateRecipe"){
+    try {UpdateRecipe({ id, recipe: formData });}
+      catch (err) {
+      if (err?.data?.message === "User already exists") {
+        data.setError("username", {
+          type: "server",
+          message: "Username already exists",
+        });
       }
-    handleClose()  
-}
+      }}
 
+ handleClose() 
+}
 return(
    
  <Dialog
