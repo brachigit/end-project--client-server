@@ -7,7 +7,7 @@ const Cookbook=()=>{
   if (isLoading) return <div>טוען...</div>;
   if (isError) {
     console.log(error);
-    //return <div>שגיאה בטעינת מתכונים</div>;
+    
   }
   console.log(CookbookQuery.recipeList)
   if (!CookbookQuery ||CookbookQuery.length === 0) return <div>אין מתכונים להצגה</div>; 

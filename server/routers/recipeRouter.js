@@ -21,7 +21,12 @@ router.post("/",verifyJWT,managerJWT,upload.single('image'),recipe.addRecipe)
 router.delete("/:id",verifyJWT,managerJWT,recipe.deleteRecipe)
 router.put("/:id",verifyJWT,managerJWT,upload.single('image'),recipe.updateRecipe)
 router.get("/",verifyJWT,recipe.getAllRecipe)
+router.get("/search",verifyJWT,recipe.getRecipeByName)
+router.get("/name",verifyJWT,recipe.sortRecipeByName)
+router.get("/date",verifyJWT,recipe.sortRecipeByDate)
 router.get("/:id",verifyJWT,recipe.getRecipeByID)
+
+
 
 
 module.exports=router

@@ -25,6 +25,13 @@ const getRecipeByID=async(req,res)=>{
   return res.status(400).json({ message: 'This recipe not found' })
 res.json(recipe)
 }
+const getRecipeByName=async(req,res)=>{
+  const{name}=req.query;
+  const recipe=await Recipe.find({  name: { $regex: name, $options: "i" } }).lean()
+  if(!recipe)
+  return res.status(400).json({ message: 'This recipe not found' })
+res.json(recipe)
+}
 const updateRecipe=async(req,res)=>{
   const{id}=req.params
   const {name,title,ingredients,instructions}=req.body
@@ -53,7 +60,7 @@ const deleteRecipe=async(req,res)=>{
   const recipe=await Recipe.findById(id).exec()
   if(!recipe)
     return res.status(400).json({ message: 'This recipe not found' })
-const image=recipe.image
+  const image=recipe.image
  const path= './public/uploads/'+ image
  fs.unlink( path, (err) => {
   if (err) {
@@ -63,4 +70,18 @@ const image=recipe.image
   const deleteRecipe=await recipe.deleteOne()
   res.json(`${recipe.name} delete`)
 }
-module.exports={addRecipe,getAllRecipe,getRecipeByID,updateRecipe,deleteRecipe}
+const sortRecipeByName=async(req,res)=>{
+ const recipes = await Recipe.find().sort({ name: 1 }); 
+ if(!recipes?.length)
+  return res.status(400).json({ message: 'No recipes found' })
+  res.json(recipes)
+
+}
+const sortRecipeByDate=async(req,res)=>{
+ const recipes = await Recipe.find().sort({ createdAt: -1 });
+ if(!recipes?.length)
+  return res.status(400).json({ message: 'No recipes found' })
+  res.json(recipes)
+
+}
+module.exports={addRecipe,getAllRecipe,getRecipeByID,updateRecipe,deleteRecipe,getRecipeByName,sortRecipeByDate,sortRecipeByName}
