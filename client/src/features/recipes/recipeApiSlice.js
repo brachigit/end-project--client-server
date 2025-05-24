@@ -44,8 +44,18 @@ const recipeApiSlice=apiSlice.injectEndpoints({
                 
           }),invalidatesTags:["recipes"]
         }),
+        getRecipeSortByName:build. query({
+            query:()=>({
+                url:"/api/recipe/name"
+          })
+        }),
+        getRecipeSortByDate:build. query({
+            query:()=>({
+                url:"/api/recipe/date"
+          })
+        }),
 
 
 })
 })
-export const{useGetRecipesQuery,useAddFavoriteRecipeMutation,useDeleteRecipeMutation,useAddRecipeMutation,useSearchRecipeQuery,useUpdateRecipeMutation}=recipeApiSlice;
+export const{useGetRecipesQuery,useAddFavoriteRecipeMutation,useDeleteRecipeMutation,useAddRecipeMutation,useSearchRecipeQuery,useUpdateRecipeMutation,useGetRecipeSortByDateQuery,useGetRecipeSortByNameQuery}=recipeApiSlice;

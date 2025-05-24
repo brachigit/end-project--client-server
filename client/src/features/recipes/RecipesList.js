@@ -16,7 +16,7 @@ import AddRecipe from "./AddRecipe";
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import TextField from '@mui/material/TextField';
+import SortRecipe from "./SortRecipe";
 
 
 
@@ -32,7 +32,8 @@ const RecipesList = ({ cookbook }) => {
   const [action,SetAction] =useState(null)
   const [id,SetId] =useState(null)
   const [inputValue,SetInputValue] =useState("")
-  const [searchTerm,setSearchTerm] =useState(null)
+  const [sortValue, setSortValue] = useState('')
+
 
   const token = localStorage.getItem("token");
   const decoded = jwtDecode(token);
@@ -48,6 +49,7 @@ useEffect(()=>{
 },[])
 
 useEffect(()=>{
+  setSortValue('')
   if(inputValue&&search&&isSuccesSearch){
     
     SetRecipes(search)}
@@ -83,15 +85,11 @@ const ManagerUpdateRecipe= (value)=>{
     console.log(error);
     return <div>שגיאה בטעינת מתכונים</div>;
   }
-  //if (!recipes || recipes.length === 0) return <div>אין מתכונים להצגה</div>;
- 
- 
-
-
+  
 
   return (
     <>
-    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between',alignItems: 'center', mb: 2 }}>
    <Box
       sx={{
         justifyContent: 'flex-end',
@@ -114,9 +112,13 @@ const ManagerUpdateRecipe= (value)=>{
         onChange={(e) => SetInputValue(e.target.value)}
         inputProps={{ 'aria-label': 'search' }}
       />
+     
     </Box>
+        <SortRecipe setRecipe={SetRecipes} sortValue={sortValue} setSortValue={setSortValue} />
+ 
     </Box>
-
+     
+   
   {(recipes && recipes.length != 0)&&(
     <Box sx={{ width: '100%', direction: 'rtl' }}>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
