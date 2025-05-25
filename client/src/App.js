@@ -9,7 +9,8 @@ import Recipe from './features/recipes/Recipe'
 import BMI from './features/BMI/BMI'
 import HomePage from "./components/HomePage"
 import Cookbook from './features/cookbook/Cookbook';
-import ManagerOptions from './features/managerOptions/ManagerOptions';
+import Options from './features/managerOptions/Options';
+import UserTable from './features/users/UserTable';
 
 function App() {
   return (
@@ -23,7 +24,8 @@ function App() {
       <Route path='/recipe/:id' element={<Recipe/>} />
       <Route path='/cookbook' element={<Cookbook/>} />
       <Route path='/bmi' element={<BMI/>} />
-      <Route path='/manager' element={<ManagerOptions/>} />
+      <Route path='/options' element={<Options/>} />
+      <Route path='/user' element={<UserTable/>} />
       </Route>
       </Routes>
     </>

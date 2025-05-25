@@ -54,8 +54,23 @@ const recipeApiSlice=apiSlice.injectEndpoints({
                 url:"/api/recipe/date"
           })
         }),
+        getComments:build. query({
+            query:(id)=>({
+                url:`/api/recipe/comment/${id}`
+
+          }),providesTags:["comments"]
+        }),
+         addComment:build.mutation({
+            query:({id,text})=>({
+                url:`/api/recipe/${id}`,
+                method:"POST",
+                body: {text}
+          }),invalidatesTags:["comments"]
+        }),
 
 
 })
 })
-export const{useGetRecipesQuery,useAddFavoriteRecipeMutation,useDeleteRecipeMutation,useAddRecipeMutation,useSearchRecipeQuery,useUpdateRecipeMutation,useGetRecipeSortByDateQuery,useGetRecipeSortByNameQuery}=recipeApiSlice;
+export const{useGetRecipesQuery,useAddFavoriteRecipeMutation,useDeleteRecipeMutation,
+  useAddRecipeMutation,useSearchRecipeQuery,useUpdateRecipeMutation,useGetRecipeSortByDateQuery,
+  useGetRecipeSortByNameQuery,useAddCommentMutation,useGetCommentsQuery}=recipeApiSlice;

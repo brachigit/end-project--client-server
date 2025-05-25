@@ -4,30 +4,46 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import { useDispatch } from "react-redux";
 import { setToken } from "./authSlice";
 import { TextField, Button, Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 
 const Register=()=>{
     const dispatch=useDispatch() 
+    const navigate = useNavigate();
     const [registerFunc,{data, error, isLoading,isSuccess,isError }]=useRegisterMutation()
     
 
     const { register, handleSubmit, formState: { errors }, setError } = useForm()
-  const onSubmit = (data1) =>{ 
-    try {registerFunc(data1)}
-    catch (err) {
-      // אם השרת החזיר שגיאה על username:
-      if (err?.data?.message === "User already exists") {
+  const onSubmit = async (data) => {
+  try {
+    const result = await registerFunc(data);
+
+    if ("error" in result) {
+      const errMsg = result.error?.data?.message;
+
+      if (errMsg === "User already exists") {
         setError("username", {
           type: "server",
-          message: "Username already exists",
+          message: "שם משתמש כבר קיים במערכת",
         });
-      }}
+      } else {
+        setError("username", {
+          type: "server",
+          message: errMsg || "שגיאה לא ידועה",
+        });
+      }
+    }
+  } catch (err) {
+    console.error("שגיאה בלתי צפויה:", err);
   }
+};
+
 
   useEffect(
     ()=>{
-        if(isSuccess)
-            dispatch(setToken({token: data?.accessToken}))
+        if(isSuccess){
+          dispatch(setToken({token: data?.accessToken}))
+          navigate("/options");}
     },[isSuccess] )
     
 

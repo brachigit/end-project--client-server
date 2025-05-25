@@ -6,7 +6,7 @@ const addRecipe=async(req,res)=>{
   if(!name||!title||!ingredients||!instructions){
     return res.status(400).json({massage:"Name title ingreddients and instruction are requierd"})
   }
-  const newImage=await Recipe.create({name,image,title,ingredients,instructions})
+  const newImage=await Recipe.create({name,image,title,ingredients,instructions,comments :[]})
   if(!newImage){
     return res.status(400).json({massage:"Something wrong"})
   }
@@ -84,4 +84,43 @@ const sortRecipeByDate=async(req,res)=>{
   res.json(recipes)
 
 }
-module.exports={addRecipe,getAllRecipe,getRecipeByID,updateRecipe,deleteRecipe,getRecipeByName,sortRecipeByDate,sortRecipeByName}
+const Addcomment=async(req,res)=>{
+  const {id}=req.params
+  const {text}=req.body
+  const userId = req.user._id;
+  const newComment = {
+      user: userId,
+      text,
+      date: new Date()
+    }
+
+const Comment=await Recipe.findByIdAndUpdate(
+           id,
+           { $addToSet: { comments: newComment } },
+            { new: true }
+          )
+        
+    
+        if(Comment)
+         return res.status(200).json(Comment);
+         return res.status(500).json({ error: "Cannot add a comment" });
+    
+  }
+  const getComments=async(req,res)=>{
+    const {id}=req.params
+    const recipe = await Recipe.findById(id).populate('comments.user', 'username');
+    if(!recipe||!recipe.comments||recipe.comments.length==0)
+    return res.status(400).json({ message: 'This recipe not found' })
+    return res.status(200).json(recipe.comments);
+    /*const {page}=req.body
+    const start = (page - 1) * 2;
+
+    const recipe = await Recipe.findById(id).populate('comments.user', 'username');
+    if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
+    const pagedComments = recipe.comments.slice(start, start + limit);*/
+
+  }
+
+
+
+module.exports={addRecipe,getAllRecipe,getRecipeByID,updateRecipe,deleteRecipe,getRecipeByName,sortRecipeByDate,sortRecipeByName,Addcomment,getComments}

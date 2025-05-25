@@ -38,15 +38,17 @@ const RecipesList = ({ cookbook }) => {
   const token = localStorage.getItem("token");
   const decoded = jwtDecode(token);
   const isAdmin = decoded?.roles === "Admin";
+
   const { data: recipesQuery, error, isLoading, isSuccess, isError } = useGetRecipesQuery();
   const [deleteRecipe,{ data:deletData, error:deleteEror, isLoading:deleteLogin, isSuccess:deleteSuccess, isError:deleteIsEror }] = useDeleteRecipeMutation();
   const [addFavorite, {  data: favoriteData,  error: addError,  isLoading: isLoadingFavorite,  isSuccess: isFavoriteSuccess,  isError: isFavoriteError}] = useAddFavoriteRecipeMutation();
     const{data: search,  error: searchError,  isLoading: searchIsLoading,  isSuccess:isSuccesSearch,  isError: isSearcheError}= useSearchRecipeQuery(inputValue);
 //SetRecipes(cookbook || recipesQuery);
 
-useEffect(()=>{
-   SetRecipes(cookbook || recipesQuery)
-},[])
+useEffect(() => {
+  SetRecipes(cookbook || recipesQuery);
+}, [cookbook, recipesQuery]);
+
 
 useEffect(()=>{
   setSortValue('')
@@ -81,10 +83,11 @@ const ManagerUpdateRecipe= (value)=>{
 
 
  if (isLoading) return <div>טוען...</div>;
-  if (isError) {
-    console.log(error);
+if (isError) {
+    
     return <div>שגיאה בטעינת מתכונים</div>;
   }
+  if (!recipes || recipes.length === 0) return <div>אין מתכונים להצגה</div>;
   
 
   return (

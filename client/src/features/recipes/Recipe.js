@@ -1,8 +1,20 @@
 import { useLocation } from "react-router-dom";
+import {useAddCommentMutation,useGetCommentsQuery} from "./recipeApiSlice"
+import CommentDialog from './CommentDialog';
+import CommentList from "./CommentList";
 
 const Recipe=()=>{
+  
   const location = useLocation();
   const item = location.state?.item;
+  const { data: commentsQuery, error, isLoading, isSuccess, isError } = useGetCommentsQuery(item._id);
+  const[addComment, { data: commentsMutation, error:AddErr, isLoading:AddIsload, isSuccess:AddIsSuccess, isError:AddIsErr } ]= useAddCommentMutation();
+
+const handleAddComment = async (text) => {
+  console.log(text)
+     addComment({id:item._id ,text:{text}})
+   
+  };
 
   if (!item) return <div>אין נתונים להצגה</div>;
 
@@ -27,7 +39,10 @@ const Recipe=()=>{
           />
         </div>
       </div>
+      <CommentDialog onAddComment={handleAddComment} isLoading={AddIsload} />
+      <CommentList comments={commentsQuery}/>
     </div>
+    
   );
 };
 
