@@ -79,31 +79,7 @@ return(
                  {...register("name", { required: "Name is required" })}
           
                />
-           <TextField
-           type="file"
-         inputProps={{ accept: "image/*" }}
-          {...register("image", { required: "Image is required" })}
-         onChange={(e) => {
-         const file = e.target.files[0];
-            if (file) {
-              setPreview(URL.createObjectURL(file));
-             }
-           }}
-              />
-
-             {preview && (
-             <img
-             src={preview}
-             alt="Preview"
-             style={{
-            width: "100%",
-            maxWidth: 250,
-            marginTop: 12,
-            borderRadius: 8,
-            display: "block",
-             }}
-            />
-            )}
+           
 
 
             <TextField
@@ -129,7 +105,32 @@ return(
                  margin="normal"
                  {...register("instructions", { required: "Title is required" })}
           
-               />             
+               />   
+               <TextField
+           type="file"
+         inputProps={{ accept: "image/*" }}
+          {...register("image", { required: "Image is required" })}
+         onChange={(e) => {
+         const file = e.target.files[0];
+            if (file) {
+              setPreview(URL.createObjectURL(file));
+             }
+           }}
+              />
+
+             {preview && (
+             <img
+             src={preview}
+             alt="Preview"
+             style={{
+            width: "100%",
+            maxWidth: 250,
+            marginTop: 12,
+            borderRadius: 8,
+            display: "block",
+             }}
+            />
+            )}          
           
           <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

@@ -26,7 +26,7 @@ const login = async (req, res) => {
         roles:foundUser.roles
     };
 
-    const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+    const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
     return res.json({  accessToken});
    
     
@@ -47,7 +47,7 @@ const register = async (req, res) => {
        const userObject={name,username,password:hashedPwd,email,address,phone,roles:'User'}  
        const user = await User.create(userObject)
        if (user) { 
-        const accessToken = jwt.sign(userObject, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+        const accessToken = jwt.sign(userObject, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
            return res.json({ accessToken });
                      
            } else {
