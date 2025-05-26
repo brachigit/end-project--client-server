@@ -26,7 +26,7 @@ return(
       }
     >
       {(isAdmin)&&
-      <ListItemButton>
+      <ListItemButton href="/user">
         <ListItemIcon>
           <AddReactionIcon />
         </ListItemIcon>
