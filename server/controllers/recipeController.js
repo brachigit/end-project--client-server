@@ -19,7 +19,7 @@ const getAllRecipe=async(req,res)=>{
 res.json(recipes)
 }
 const getRecipeByID=async(req,res)=>{
-  const{id}=req.params
+  const{id}=req.query
   const recipe=await Recipe.findById(id).lean()
   if(!recipe)
   return res.status(400).json({ message: 'This recipe not found' })
@@ -112,12 +112,7 @@ const Comment=await Recipe.findByIdAndUpdate(
     if(!recipe||!recipe.comments||recipe.comments.length==0)
     return res.status(400).json({ message: 'This recipe not found' })
     return res.status(200).json(recipe.comments);
-    /*const {page}=req.body
-    const start = (page - 1) * 2;
-
-    const recipe = await Recipe.findById(id).populate('comments.user', 'username');
-    if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
-    const pagedComments = recipe.comments.slice(start, start + limit);*/
+    
 
   }
 

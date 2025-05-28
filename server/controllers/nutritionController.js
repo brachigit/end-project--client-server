@@ -1,4 +1,6 @@
 const Nutrition=require("../models/nutritionitem")
+const nodemailer = require('nodemailer');
+
 
 const addNutrition=async(req,res)=>{
     const {name,nutrientType}=req.body
@@ -12,7 +14,7 @@ const addNutrition=async(req,res)=>{
   return res.status(200).json(newNutrition)
 }
 const getNutritionByType=async(req,res)=>{
-     const {nutrientType}=req.body
+     const {nutrientType}=req.params
      if(!nutrientType){
     return res.status(400).json({massage:"Not found type"})}
     const nutritions=await Nutrition.find({nutrientType:nutrientType}) 
@@ -51,4 +53,60 @@ const deleteNutritionByID=async(req,res)=>{
    res.json(nutrition)
 
 }
- module.exports={addNutrition,getNutritionByType,getNutritionByID,updateNutrition,deleteNutritionByID}
+
+const deleteNutritionByName=async(req,res)=>{
+
+    const name = decodeURIComponent(req.params.name);
+    const nutrientType = decodeURIComponent(req.params.nutrientType);
+    const nutrition = await Nutrition.findOne({ name, nutrientType }).exec();
+
+    if(!nutrition)
+      return res.status(400).json({ message: 'nutrition not found' })
+
+    const updetnutrition=await nutrition.deleteOne()
+
+    res.json(nutrition)
+
+}
+const SendMail=async(req,res)=>{
+  const { email, pdfContent } = req.body;
+
+  // כאן יוצרים את הקובץ בפורמט PDF או פשוט טקסט (לצורך הדוגמה, טקסט פשוט)
+  const pdfText = pdfContent.join('\n');
+
+  // הגדרת ה- SMTP של הדוא"ל (כדאי להשתמש ב- Gmail או שירות דומה)
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'brachikoren@gmail.com',
+      pass: 'fpzb jinl xvro dyfm',
+    },
+  });
+
+  const mailOptions = {
+    from: 'brachikoren@gmail.com',
+    to: email,
+    subject: 'תפריט דיאטה - PDF',
+    text: 'מצורף קובץ עם סיכום התפריט.',
+    attachments: [
+      {
+        filename: 'diet-summary.txt', // תוכל לשנות ל diet-summary.pdf אם תייצר PDF אמיתי
+        content: pdfText,
+        contentType: 'text/plain', // או application/pdf אם PDF אמיתי
+      },
+    ],
+  };
+
+  try {
+
+    await transporter.sendMail(mailOptions);
+    res.json({ success: true, message: 'המייל נשלח בהצלחה!' });
+
+  } 
+  catch (error) {
+    res.status(500).json({ success: false, message: 'שגיאה בשליחת המייל', error });
+  }}
+
+
+ module.exports={addNutrition,getNutritionByType,getNutritionByID
+  ,updateNutrition,deleteNutritionByID,SendMail,deleteNutritionByName}

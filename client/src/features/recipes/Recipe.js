@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import {useAddCommentMutation,useGetCommentsQuery} from "./recipeApiSlice"
 import CommentDialog from './CommentDialog';
 import CommentList from "./CommentList";
+import {useEffect}  from "react"
 
 const Recipe=()=>{
   
@@ -9,6 +10,16 @@ const Recipe=()=>{
   const item = location.state?.item;
   const { data: commentsQuery, error, isLoading, isSuccess, isError } = useGetCommentsQuery(item._id);
   const[addComment, { data: commentsMutation, error:AddErr, isLoading:AddIsload, isSuccess:AddIsSuccess, isError:AddIsErr } ]= useAddCommentMutation();
+
+  useEffect(() => {
+  let recentRecipes = JSON.parse(localStorage.getItem("recentRecipes")) || [];
+recentRecipes = recentRecipes.filter(r => r._id !== item._id);
+recentRecipes.unshift(item);
+recentRecipes = recentRecipes.slice(0, 5);
+localStorage.setItem("recentRecipes", JSON.stringify(recentRecipes));
+
+}, []);
+
 
 const handleAddComment = async (text) => {
   console.log(text)
