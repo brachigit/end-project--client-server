@@ -78,13 +78,13 @@ const SendMail=async(req,res)=>{
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'brachikoren@gmail.com',
-      pass: 'fpzb jinl xvro dyfm',
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from: 'brachikoren@gmail.com',
+    from: process.env.EMAIL_USER,
     to: email,
     subject: 'תפריט דיאטה - PDF',
     text: 'מצורף קובץ עם סיכום התפריט.',
