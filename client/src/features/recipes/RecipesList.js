@@ -42,7 +42,7 @@ const RecipesList = ({ cookbook }) => {
   const { data: recipesQuery, error, isLoading, isSuccess, isError } = useGetRecipesQuery();
   const [deleteRecipe,{ data:deletData, error:deleteEror, isLoading:deleteLogin, isSuccess:deleteSuccess, isError:deleteIsEror }] = useDeleteRecipeMutation();
   const [addFavorite, {  data: favoriteData,  error: addError,  isLoading: isLoadingFavorite,  isSuccess: isFavoriteSuccess,  isError: isFavoriteError}] = useAddFavoriteRecipeMutation();
-    const{data: search,  error: searchError,  isLoading: searchIsLoading,  isSuccess:isSuccesSearch,  isError: isSearcheError}= useSearchRecipeQuery(inputValue);
+  const{data: search,  error: searchError,  isLoading: searchIsLoading,  isSuccess:isSuccesSearch,  isError: isSearcheError}= useSearchRecipeQuery(inputValue);
 //SetRecipes(cookbook || recipesQuery);
 
 useEffect(() => {
@@ -87,7 +87,7 @@ if (isError) {
     
     return <div>שגיאה בטעינת מתכונים</div>;
   }
-  if (!recipes || recipes.length === 0) return <div>אין מתכונים להצגה</div>;
+  //if (!recipes || recipes.length === 0) return <div>אין מתכונים להצגה</div>;
   
 
   return (
